@@ -106,6 +106,9 @@ body {
 }
 
 .keyboard {
+  display:flex;
+  flex-direction: column;
+  gap: 10 px;
   margin-top: 20px;
 }
 
@@ -194,16 +197,25 @@ body {
 /* Responsive tweaks */
 @media (max-width: 480px) {
   .tile-display {
-    width: 32px;
-    height: 32px;
     font-size: 1.2rem;
   }
 
   .tiles-word-group {
-    gap: 12px;
+    gap: 10px;
+    margin: 0px;
   }
 
   .tiles-single-word {
-    gap: 6px;
+    gap: 2px;
+  }
+
+  .key-button {
+    padding: 5px 8px;
+    font-size: 1.5rem;
+    border: none;
+    border-radius: 6px;
+    background-color: #ddd; /* Default gray */
+    cursor: pointer;
+    transition: all 0.2s ease;
   }
 }

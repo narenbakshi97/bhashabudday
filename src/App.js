@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import './App.css';
 
 const clues = [
@@ -163,30 +163,46 @@ const ImageClue = ({ src, round }) => {
   );
 };
 
-const AnswerTiles = ({ answer, onSubmit, tiles, setTiles, keyboardStatus, setKeyboardStatus }) => {
-  const [isSubmitted, setIsSubmitted] = useState(false);  // Track submission state
 
+const AnswerTiles = ({ answer, onSubmit, tapSound }) => {
+  const [tiles, setTiles] = useState([]);
+  const [keyboardLetters, setKeyboardLetters] = useState([]);
   const words = answer.trim().split(' ');
   const expectedLength = answer.replace(/\s/g, '').length;
 
-  // Function to handle letter clicks and update tiles
+  useEffect(() => {
+    const getKeyboardLetters = () => {
+      const uniqueAnswerLetters = Array.from(new Set(answer.replace(/\s/g, '').toUpperCase()));
+      const allLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+      const remainingLetters = allLetters.filter(letter => !uniqueAnswerLetters.includes(letter));
+
+      while (uniqueAnswerLetters.length < 16) {
+        const randomIndex = Math.floor(Math.random() * remainingLetters.length);
+        const letter = remainingLetters.splice(randomIndex, 1)[0];
+        uniqueAnswerLetters.push(letter);
+      }
+
+      return uniqueAnswerLetters.sort();
+    };
+
+    setKeyboardLetters(getKeyboardLetters());
+    setTiles([]);
+  }, [answer]);
+
   const handleLetterClick = (char) => {
     if (tiles.length < expectedLength) {
       setTiles([...tiles, char]);
     }
   };
 
-  // Function to handle backspace action
   const handleBackspace = () => {
     setTiles(tiles.slice(0, -1));
   };
 
-  // Function to submit the answer and check if it's correct
   const handleSubmit = () => {
-    const userAnswer = tiles.join('');
-    setIsSubmitted(true);  // Mark as submitted
-    onSubmit(userAnswer);
+    onSubmit(tiles.join(''));
   };
+
 
   const renderWordTiles = () => {
     let tileIndex = 0;
@@ -194,24 +210,15 @@ const AnswerTiles = ({ answer, onSubmit, tiles, setTiles, keyboardStatus, setKey
       <div className="tiles-word-group">
         {words.map((word, i) => (
           <div key={i} className="tiles-single-word">
-            {Array.from({ length: word.length }).map((_, j) => {
-              const currentTile = tiles[tileIndex] || ''; // Get current letter or empty if not filled
-              tileIndex++;
-              return (
-                <div key={j} className="tile-display">
-                  {currentTile}
-                </div>
-              );
-            })}
+            {Array.from({ length: word.length }).map((_, j) => (
+              <div key={j} className="tile-display">
+                {tiles[tileIndex++] || ''}
+              </div>
+            ))}
           </div>
         ))}
       </div>
     );
-  };
-
-  const getKeyButtonClass = (letter) => {
-    const status = keyboardStatus[letter] || 'default'; // Use default if no status is set
-    return `key-button ${status}`;
   };
 
   return (
@@ -219,19 +226,17 @@ const AnswerTiles = ({ answer, onSubmit, tiles, setTiles, keyboardStatus, setKey
       {renderWordTiles()}
 
       <div className="keyboard">
-        {['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'].map((row, rowIndex) => (
-          <div key={rowIndex} className="keyboard-row">
-            {row.split('').map((char) => (
-              <button
-                key={char}
-                onClick={() => handleLetterClick(char)}
-                className={getKeyButtonClass(char)}
-              >
-                {char}
-              </button>
-            ))}
-          </div>
-        ))}
+        <div className="keyboard-row">
+          {keyboardLetters.map((char) => (
+            <button
+              key={char}
+              onClick={() => handleLetterClick(char)}
+              className="key-button"
+            >
+              {char}
+            </button>
+          ))}
+        </div>
         <div className="keyboard-row">
           <button onClick={handleBackspace} className="key-button special">←</button>
           <button onClick={handleSubmit} className="key-button special">Submit</button>
@@ -245,7 +250,7 @@ const Feedback = ({ status }) => {
   if (status === null) return null;
   return (
     <div className={`feedback ${status ? 'correct' : 'incorrect'}`}>
-      {status ? 'Wah Bhasha wah!' : 'Try Again buddy!'}
+      {status ? 'Correct!' : 'Try Again!'}
     </div>
   );
 };
@@ -253,16 +258,8 @@ const Feedback = ({ status }) => {
 const Game = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isCorrect, setIsCorrect] = useState(null);
-  const [keyboardStatus, setKeyboardStatus] = useState({}); // Track keyboard status
-  const [tiles, setTiles] = useState([]); // Track tiles for the current word
 
   const currentClue = clues[currentIndex];
-
-  // Function to reset keyboard status for the next round
-  const resetKeyboardStatus = () => {
-    setKeyboardStatus({});
-    setTiles([]);  // Clear the current tiles
-  };
 
   const handleAnswerSubmit = (userAnswer) => {
     if (userAnswer.toUpperCase() === currentClue.answer.replace(/\s/g, '').toUpperCase()) {
@@ -270,26 +267,18 @@ const Game = () => {
       setTimeout(() => {
         setCurrentIndex((prev) => prev + 1);
         setIsCorrect(null);
-        resetKeyboardStatus(); // Reset keyboard for the next round
       }, 1000);
     } else {
       setIsCorrect(false);
     }
   };
 
-  if (!currentClue) return <div className="game-complete"><div>You completed the game! 🎉</div><div>Now finish second birthday Challenge: <a href="https://www.geoguessr.com/quiz/6573318f-d235-4177-95ab-f3c6ceb33a35?r=632534ad4d6352b411e20171">Take me THERE!</a></div></div>;
+  if (!currentClue) return <div className="game-complete">You completed the game! 🎉</div>;
 
   return (
     <div className="game-wrapper">
       <ImageClue src={currentClue.imageUrl} round={currentIndex + 1} />
-      <AnswerTiles
-        answer={currentClue.answer}
-        onSubmit={handleAnswerSubmit}
-        tiles={tiles}
-        setTiles={setTiles}
-        keyboardStatus={keyboardStatus}
-        setKeyboardStatus={setKeyboardStatus}
-      />
+      <AnswerTiles answer={currentClue.answer} onSubmit={handleAnswerSubmit} />
       <Feedback status={isCorrect} />
     </div>
   );
