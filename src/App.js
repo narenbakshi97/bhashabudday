@@ -1,144 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import './App.css';
 
-const clues = [
-  {
-    id: 1,
-    imageUrl: process.env.PUBLIC_URL + '/images/dt.png',
-    answer: 'Dragon Tales',
-  },
-  {
-    id: 2,
-    imageUrl: process.env.PUBLIC_URL + '/images/lilac.png',
-    answer: 'lilac',
-  },
-  {
-    id: 3,
-    imageUrl: process.env.PUBLIC_URL + '/images/swiss.png',
-    answer: 'switzerland',
-  },
-  {
-    id:4,
-    imageUrl: process.env.PUBLIC_URL + '/images/garb.png',
-    answer: 'garba'
-  },
-  {
-    id:5,
-    imageUrl: process.env.PUBLIC_URL + '/images/NB.png',
-    answer: 'naren'
-  },
-  {
-    id:6,
-    imageUrl: process.env.PUBLIC_URL + '/images/pk.png',
-    answer: 'pikachu'
-  },
-  {
-    id:7,
-    imageUrl: process.env.PUBLIC_URL + '/images/rn.png',
-    answer: 'rain'
-  },
-  {
-    id:8,
-    imageUrl: process.env.PUBLIC_URL + '/images/aw.png',
-    answer: 'arabic wedding'
-  },
-  {
-    id:9,
-    imageUrl: process.env.PUBLIC_URL + '/images/bhul.png',
-    answer: 'bhool bhulaiyaa'
-  },
-  {
-    id:10,
-    imageUrl: process.env.PUBLIC_URL + '/images/br.png',
-    answer: 'bibhatsa'
-  },
-  {
-    id:11,
-    imageUrl: process.env.PUBLIC_URL + '/images/dk.png',
-    answer: 'dal khichdi'
-  },
-  {
-    id:12,
-    imageUrl: process.env.PUBLIC_URL + '/images/dp.png',
-    answer: 'dragon potato'
-  },
-  {
-    id:13,
-    imageUrl: process.env.PUBLIC_URL + '/images/kk.png',
-    answer: 'kathak'
-  },
-  {
-    id:14,
-    imageUrl: process.env.PUBLIC_URL + '/images/kn.png',
-    answer: 'krishnayan'
-  },
-  {
-    id:15,
-    imageUrl: process.env.PUBLIC_URL + '/images/kp.png',
-    answer: 'crispello'
-  },
-  {
-    id:16,
-    imageUrl: process.env.PUBLIC_URL + '/images/mango.png',
-    answer: 'mango'
-  },
-  {
-    id:17,
-    imageUrl: process.env.PUBLIC_URL + '/images/pg.png',
-    answer: 'pavagadh'
-  },
-  {
-    id:18,
-    imageUrl: process.env.PUBLIC_URL + '/images/pj.png',
-    answer: 'pinju'
-  },
-  {
-    id:19,
-    imageUrl: process.env.PUBLIC_URL + '/images/RK.png',
-    answer: 'ranbir kapoor'
-  },
-  {
-    id:20,
-    imageUrl: process.env.PUBLIC_URL + '/images/sk.png',
-    answer: 'seekh kebab'
-  },
-  {
-    id:21,
-    imageUrl: process.env.PUBLIC_URL + '/images/sn.png',
-    answer: 'sun'
-  },
-  {
-    id:22,
-    imageUrl: process.env.PUBLIC_URL + '/images/sw.png',
-    answer: 'swing'
-  },
-  {
-    id:23,
-    imageUrl: process.env.PUBLIC_URL + '/images/ao.png',
-    answer: 'aglio olio'
-  },
-  {
-    id:24,
-    imageUrl: process.env.PUBLIC_URL + '/images/bd.png',
-    answer: 'bhasha'
-  },
-  {
-    id:25,
-    imageUrl: process.env.PUBLIC_URL + '/images/bn.png',
-    answer: 'brooklyn nine nine'
-  },
-  {
-    id:26,
-    imageUrl: process.env.PUBLIC_URL + '/images/mk.png',
-    answer: 'madhav kyay nathi'
-  },
-  {
-    id:27,
-    imageUrl: process.env.PUBLIC_URL + '/images/bb.png',
-    answer: 'bachuben'
-  }
-];
-
 const ImageClue = ({ src, round, onImageLoad }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -293,15 +155,164 @@ const Feedback = ({ status }) => {
 const Game = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isCorrect, setIsCorrect] = useState(null);
-  const [tapSound, setTapSound] = useState(null);
   const [gameCompleted, setGameCompleted] = useState(false);
-  const [isImageLoading, setIsImageLoading] = useState(true);
+  const [isAllImagesLoaded, setIsAllImagesLoaded] = useState(false);
+
+  const clues = [
+    {
+      id: 1,
+      imageUrl: process.env.PUBLIC_URL + '/images/dt.png',
+      answer: 'Dragon Tales',
+    },
+    {
+      id: 2,
+      imageUrl: process.env.PUBLIC_URL + '/images/lilac.png',
+      answer: 'lilac',
+    },
+    {
+      id: 3,
+      imageUrl: process.env.PUBLIC_URL + '/images/swiss.png',
+      answer: 'switzerland',
+    },
+    {
+      id:4,
+      imageUrl: process.env.PUBLIC_URL + '/images/garb.png',
+      answer: 'garba'
+    },
+    {
+      id:5,
+      imageUrl: process.env.PUBLIC_URL + '/images/NB.png',
+      answer: 'naren'
+    },
+    {
+      id:6,
+      imageUrl: process.env.PUBLIC_URL + '/images/pk.png',
+      answer: 'pikachu'
+    },
+    {
+      id:7,
+      imageUrl: process.env.PUBLIC_URL + '/images/rn.png',
+      answer: 'rain'
+    },
+    {
+      id:8,
+      imageUrl: process.env.PUBLIC_URL + '/images/aw.png',
+      answer: 'arabic wedding'
+    },
+    {
+      id:9,
+      imageUrl: process.env.PUBLIC_URL + '/images/bhul.png',
+      answer: 'bhool bhulaiyaa'
+    },
+    {
+      id:10,
+      imageUrl: process.env.PUBLIC_URL + '/images/br.png',
+      answer: 'bibhatsa'
+    },
+    {
+      id:11,
+      imageUrl: process.env.PUBLIC_URL + '/images/dk.png',
+      answer: 'dal khichdi'
+    },
+    {
+      id:12,
+      imageUrl: process.env.PUBLIC_URL + '/images/dp.png',
+      answer: 'dragon potato'
+    },
+    {
+      id:13,
+      imageUrl: process.env.PUBLIC_URL + '/images/kk.png',
+      answer: 'kathak'
+    },
+    {
+      id:14,
+      imageUrl: process.env.PUBLIC_URL + '/images/kn.png',
+      answer: 'krishnayan'
+    },
+    {
+      id:15,
+      imageUrl: process.env.PUBLIC_URL + '/images/kp.png',
+      answer: 'crispello'
+    },
+    {
+      id:16,
+      imageUrl: process.env.PUBLIC_URL + '/images/mango.png',
+      answer: 'mango'
+    },
+    {
+      id:17,
+      imageUrl: process.env.PUBLIC_URL + '/images/pg.png',
+      answer: 'pavagadh'
+    },
+    {
+      id:18,
+      imageUrl: process.env.PUBLIC_URL + '/images/pj.png',
+      answer: 'pinju'
+    },
+    {
+      id:19,
+      imageUrl: process.env.PUBLIC_URL + '/images/RK.png',
+      answer: 'ranbir kapoor'
+    },
+    {
+      id:20,
+      imageUrl: process.env.PUBLIC_URL + '/images/sk.png',
+      answer: 'seekh kebab'
+    },
+    {
+      id:21,
+      imageUrl: process.env.PUBLIC_URL + '/images/sn.png',
+      answer: 'sun'
+    },
+    {
+      id:22,
+      imageUrl: process.env.PUBLIC_URL + '/images/sw.png',
+      answer: 'swing'
+    },
+    {
+      id:23,
+      imageUrl: process.env.PUBLIC_URL + '/images/ao.png',
+      answer: 'aglio olio'
+    },
+    {
+      id:24,
+      imageUrl: process.env.PUBLIC_URL + '/images/bd.png',
+      answer: 'bhasha'
+    },
+    {
+      id:25,
+      imageUrl: process.env.PUBLIC_URL + '/images/bn.png',
+      answer: 'brooklyn nine nine'
+    },
+    {
+      id:26,
+      imageUrl: process.env.PUBLIC_URL + '/images/mk.png',
+      answer: 'madhav kyay nathi'
+    },
+    {
+      id:27,
+      imageUrl: process.env.PUBLIC_URL + '/images/bb.png',
+      answer: 'bachuben'
+    }
+  ];
+
+  // Preload all the images when the game starts
+  useEffect(() => {
+    const preloadImages = clues.map(clue => new Promise(resolve => {
+      const img = new Image();
+      img.src = clue.imageUrl;
+      img.onload = resolve;
+    }));
+
+    // Once all images are loaded, set isAllImagesLoaded to true
+    Promise.all(preloadImages).then(() => {
+      setIsAllImagesLoaded(true);
+    });
+  }, [clues]);
 
   const currentClue = clues[currentIndex];
 
-  useEffect(() => {
-    setIsImageLoading(true); // Image is about to change
-  }, [currentIndex]);
+
 
   const handleAnswerSubmit = (userAnswer) => {
     if (userAnswer.toUpperCase() === currentClue.answer.replace(/\s/g, '').toUpperCase()) {
@@ -319,12 +330,6 @@ const Game = () => {
     }
   };
 
-  const handleImageLoad = () => {
-    console.log('Image has loaded!');
-    setIsImageLoading(false); // This is the key to hide the loader
-  };
-
-
   if (gameCompleted) {
     return (
       <div className="game-complete">
@@ -336,24 +341,34 @@ const Game = () => {
 
   return (
     <div className="game-wrapper">
-      <div className="birthday-banner">Happy Birthday Bhasha! 🎉🎈</div>
-      {/* Show loading gif if image is loading */}
-      {isImageLoading && <div className="loader-container"><img class="loader-img" src={`${process.env.PUBLIC_URL}/images/loading.gif`} alt="Loading..." /></div>}
-      <ImageClue
-        src={currentClue.imageUrl}
-        round={currentIndex + 1}
-        onImageLoad={handleImageLoad} // Call this when image is loaded
-      />
-      {
-        <AnswerTiles
-          answer={currentClue.answer}
-          onSubmit={handleAnswerSubmit}
-        />
-      }
-      <Feedback status={isCorrect} />
+      {/* Loading screen */}
+      {!isAllImagesLoaded ? (
+        <div className="loader-container loader-active">
+          <div className="birthday-banner">Happy Birthday Bhasha! 🎉🎈</div>
+          <img
+            className="loader-img"
+            src={`${process.env.PUBLIC_URL}/images/loading.gif`}
+            alt="Loading..."
+          />
+          <h3>Loading...</h3>
+        </div>
+      ) : (
+        // Game content goes here
+        <div className="game-content">
+          <div className="birthday-banner">Happy Birthday Bhasha! 🎉🎈</div>
+          <ImageClue
+            src={currentClue.imageUrl}
+            round={currentIndex + 1}
+          />
+          <AnswerTiles
+            answer={currentClue.answer}
+            onSubmit={handleAnswerSubmit}
+          />
+          <Feedback status={isCorrect} />
+        </div>
+      )}
     </div>
   );
 };
-
 
 export default Game;
