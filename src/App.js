@@ -277,6 +277,7 @@ const Game = () => {
 
   return (
     <div className="game-wrapper">
+      <div className="birthday-banner">Happy Birthday Bhasha! 🎉🎈</div>
       <ImageClue src={currentClue.imageUrl} round={currentIndex + 1} />
       <AnswerTiles answer={currentClue.answer} onSubmit={handleAnswerSubmit} />
       <Feedback status={isCorrect} />
