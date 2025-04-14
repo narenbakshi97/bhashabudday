@@ -36,3 +36,169 @@
     transform: rotate(360deg);
   }
 }
+
+
+/* App.css */
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f9f9f9;
+  margin: 0;
+  padding: 20px;
+}
+
+.game-wrapper {
+  max-width: 600px;
+  margin: auto;
+  text-align: center;
+}
+
+.round-indicator {
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.round-number {
+  color: #007bff;
+  font-weight: 700;
+}
+
+.image-container {
+  margin-bottom: 20px;
+}
+
+.clue-image {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Styling for Answer Tiles and Keyboard */
+.tiles-word-group {
+  display: flex;
+  flex-direction: column; /* Stack words vertically */
+  justify-content: center;
+  gap: 16px; /* Space between words */
+  margin: 20px 0;
+}
+
+.tiles-single-word {
+  display: flex;
+  gap: 8px;
+  justify-content: center; /* Center the tiles horizontally */
+}
+
+.tile-display {
+  width: 40px;
+  height: 40px;
+  background-color: #fff;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.keyboard {
+  margin-top: 20px;
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+/* Styles for key buttons */
+.key-button {
+  padding: 10px 16px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #ddd; /* Default gray */
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.key-button:hover {
+  background-color: #bbb;
+}
+
+.key-button.default {
+  background-color: #e0e0e0; /* Default gray */
+}
+
+.key-button.special {
+  background-color: #ffcc00;
+}
+
+.key-button:disabled {
+  background-color: #d3d3d3;
+}
+
+.feedback {
+  font-size: 1.2rem;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.feedback.correct {
+  color: green;
+}
+
+.feedback.incorrect {
+  color: red;
+}
+
+.game-complete {
+  text-align: center;
+  font-size: 1.4rem;
+  color: #333;
+  margin-top: 50px;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  max-width: 100vw;
+  padding: 1rem;
+}
+
+.modal-image {
+  width: 100%;
+  height: auto;
+  max-width: 100vw;
+  display: block;
+  margin: 0 auto;
+}
+
+/* 📱 Responsive adjustments for smaller screens */
+@media (max-width: 480px) {
+  .tiles-word-group {
+    gap: 10px; /* Space between words */
+    margin: 10px 0;
+  }
+
+  .tiles-single-word {
+    gap: 4px;
+  }
+}
