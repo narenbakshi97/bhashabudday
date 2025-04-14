@@ -296,15 +296,6 @@ const Game = () => {
   const [tapSound, setTapSound] = useState(null);
   const [gameCompleted, setGameCompleted] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(true);
-  const [isLoading, setIsLoading] = useState(true); // State to control loading visibility
-
-useEffect(() => {
-  const timer = setTimeout(() => {
-    setIsLoading(false); // Hide the loader after 1 second
-  }, 1000);
-
-  return () => clearTimeout(timer); // Cleanup on component unmount
-}, []);
 
   const currentClue = clues[currentIndex];
 
@@ -344,7 +335,7 @@ useEffect(() => {
   }
 
   return (
-    <div className={`game-wrapper ${isLoading ? 'hidden' : ''}`}>
+    <div className="game-wrapper">
       <div className="birthday-banner">Happy Birthday Bhasha! 🎉🎈</div>
       {/* Show loading gif if image is loading */}
       {isImageLoading && <div className="loader-container"><img class="loader-img" src={`${process.env.PUBLIC_URL}/images/loading.gif`} alt="Loading..." /></div>}
