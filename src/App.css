@@ -214,6 +214,16 @@ body {
   letter-spacing: 2px;
 }
 
+.tile-display.clickable {
+  cursor: pointer;
+  background-color: #f0f8ff;
+  transition: background-color 0.3s ease;
+}
+
+.tile-display.clickable:hover {
+  background-color: #d0e7ff;
+}
+
 @keyframes partyTextAnimation {
   0% {
     transform: translateY(0);
@@ -226,5 +236,67 @@ body {
   100% {
     transform: translateY(0);
     text-shadow: 0 0 5px #ff3366, 0 0 10px #ff3366, 0 0 15px #ff3366;
+  }
+}
+
+/* Loader Container */
+.loader-container {
+  position: fixed;   /* Cover the entire screen */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5); /* Optional: Semi-transparent background */
+  z-index: 9999; /* Ensures the loader is on top of everything */
+  opacity: 1;
+  pointer-events: all; /* Ensures the loader itself is clickable if necessary */
+  transition: opacity 0.5s ease-in-out; /* Smooth fade-out effect */
+}
+
+/* Loader Image */
+.loader-img {
+  max-width: 90%;
+  max-height: 80%;
+  object-fit: contain;
+}
+
+/* Hidden state for the loader */
+.loader-container.hidden {
+  opacity: 0;
+  pointer-events: none; /* Prevent interaction with the loader when hidden */
+}
+
+/* This class makes everything else below the loader disappear */
+.loader-active ~ * {
+  visibility: hidden; /* Hides all content below the loader */
+  pointer-events: none; /* Prevent interaction with content */
+}
+
+/* Optional: Apply styles for game content that should fade when loader is visible */
+.game-wrapper {
+  transition: opacity 0.5s ease;
+}
+
+/* Content visibility when loader is hidden */
+.game-wrapper.hidden {
+  opacity: 0;
+}
+
+/* For very small screens (like mobile) */
+@media (max-width: 600px) {
+  .loader-img {
+    max-width: 80%; /* Reduce width for small devices */
+    max-height: 70%; /* Reduce height for small devices */
+  }
+}
+
+/* For larger screens (e.g., tablets, laptops) */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .loader-img {
+    max-width: 70%;  /* Adjust size for tablets */
+    max-height: 60%;
   }
 }

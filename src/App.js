@@ -94,7 +94,7 @@ const clues = [
   },
   {
     id:19,
-    imageUrl: process.env.PUBLIC_URL + '/images/rk.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/RK.png',
     answer: 'ranbir kapoor'
   },
   {
@@ -139,7 +139,7 @@ const clues = [
   }
 ];
 
-const ImageClue = ({ src, round }) => {
+const ImageClue = ({ src, round, onImageLoad }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleModal = () => {
@@ -148,14 +148,26 @@ const ImageClue = ({ src, round }) => {
 
   return (
     <>
-    <div className="round-indicator">Round <span className="round-number">{round}</span>/27</div>
+      <div className="round-indicator">
+        Round <span className="round-number">{round}</span>/27
+      </div>
       <div className="image-container" onClick={toggleModal}>
-        <img src={src} alt="Clue" className="clue-image" />
+        <img
+          src={src}
+          alt="Clue"
+          className="clue-image"
+          onLoad={onImageLoad} // 🧠 Call this to notify parent that loading is done
+        />
       </div>
       {isModalOpen && (
         <div className="modal-overlay" onClick={toggleModal}>
           <div className="modal-content">
-            <img src={src} alt="Clue enlarged" className="modal-image" />
+            <img
+              src={src}
+              alt="Clue enlarged"
+              className="modal-image"
+              onLoad={onImageLoad} // Optional: Call it here too if needed
+            />
           </div>
         </div>
       )}
@@ -164,7 +176,7 @@ const ImageClue = ({ src, round }) => {
 };
 
 
-const AnswerTiles = ({ answer, onSubmit, tapSound }) => {
+const AnswerTiles = ({ answer, onSubmit }) => {
   const [tiles, setTiles] = useState([]);
   const [keyboardLetters, setKeyboardLetters] = useState([]);
   const words = answer.trim().split(' ');
@@ -172,54 +184,81 @@ const AnswerTiles = ({ answer, onSubmit, tapSound }) => {
 
   useEffect(() => {
     const getKeyboardLetters = () => {
-      const uniqueAnswerLetters = Array.from(new Set(answer.replace(/\s/g, '').toUpperCase()));
-      const allLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-      const remainingLetters = allLetters.filter(letter => !uniqueAnswerLetters.includes(letter));
-
-      while (uniqueAnswerLetters.length < 16) {
-        const randomIndex = Math.floor(Math.random() * remainingLetters.length);
-        const letter = remainingLetters.splice(randomIndex, 1)[0];
-        uniqueAnswerLetters.push(letter);
-      }
-
-      return uniqueAnswerLetters.sort();
+      const answerChars = answer.replace(/\s/g, '').toUpperCase().split('');
+      const extraLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        .split('')
+        .filter((c) => !answerChars.includes(c))
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 5);
+      return [...answerChars, ...extraLetters].sort(() => 0.5 - Math.random()).map((char, index) => ({ char, id: `${char}-${index}` }));
     };
 
     setKeyboardLetters(getKeyboardLetters());
-    setTiles([]);
+    setTiles([]); // Clear tiles when answer changes (new round)
   }, [answer]);
 
-  const handleLetterClick = (char) => {
-    if (tiles.length < expectedLength) {
-      setTiles([...tiles, char]);
+  const handleLetterClick = (keyObj) => {
+  if (tiles.length < expectedLength) {
+    const newTiles = [...tiles, keyObj];
+    const newKeyboard = keyboardLetters.filter((k) => k.id !== keyObj.id);
+    setTiles(newTiles);
+    setKeyboardLetters(newKeyboard);
+
+    // Auto-submit if last tile filled
+    if (newTiles.length === expectedLength) {
+      setTimeout(() => handleSubmit(newTiles), 300); // slight delay for UX
+    }
+  }
+};
+
+
+  const handleBackspace = () => {
+    if (tiles.length > 0) {
+      const lastKey = tiles[tiles.length - 1];
+      setTiles(tiles.slice(0, -1));
+      setKeyboardLetters([...keyboardLetters, lastKey]);
     }
   };
 
-  const handleBackspace = () => {
-    setTiles(tiles.slice(0, -1));
+  const handleSubmit = (submittedTiles = tiles) => {
+    onSubmit(submittedTiles.map(t => t.char).join(''));
   };
-
-  const handleSubmit = () => {
-    onSubmit(tiles.join(''));
-  };
-
 
   const renderWordTiles = () => {
-    let tileIndex = 0;
-    return (
-      <div className="tiles-word-group">
-        {words.map((word, i) => (
-          <div key={i} className="tiles-single-word">
-            {Array.from({ length: word.length }).map((_, j) => (
-              <div key={j} className="tile-display">
-                {tiles[tileIndex++] || ''}
+  const wordLengths = words.map(word => word.length);
+  let tileIndex = 0;
+
+  return (
+    <div className="tiles-word-group">
+      {wordLengths.map((length, i) => (
+        <div key={i} className="tiles-single-word">
+          {Array.from({ length }).map((_, j) => {
+            const currentTile = tiles[tileIndex];
+            const currentIndex = tileIndex;
+            tileIndex++;
+
+            return (
+              <div
+                key={j}
+                className={`tile-display ${currentTile ? 'clickable' : ''}`}
+                onClick={() => {
+                  if (currentTile) {
+                    const newTiles = [...tiles];
+                    const removedTile = newTiles.splice(currentIndex, 1)[0];
+                    setTiles(newTiles);
+                    setKeyboardLetters(prev => [...prev, removedTile]);
+                  }
+                }}
+              >
+                {currentTile ? currentTile.char : ''}
               </div>
-            ))}
-          </div>
-        ))}
-      </div>
-    );
-  };
+            );
+          })}
+        </div>
+      ))}
+    </div>
+  );
+};
 
   return (
     <div className="answer-container">
@@ -227,19 +266,15 @@ const AnswerTiles = ({ answer, onSubmit, tapSound }) => {
 
       <div className="keyboard">
         <div className="keyboard-row">
-          {keyboardLetters.map((char) => (
+          {keyboardLetters.map((keyObj) => (
             <button
-              key={char}
-              onClick={() => handleLetterClick(char)}
+              key={keyObj.id}
+              onClick={() => handleLetterClick(keyObj)}
               className="key-button"
             >
-              {char}
+              {keyObj.char}
             </button>
           ))}
-        </div>
-        <div className="keyboard-row">
-          <button onClick={handleBackspace} className="key-button special">←</button>
-          <button onClick={handleSubmit} className="key-button special">Submit</button>
         </div>
       </div>
     </div>
@@ -250,7 +285,7 @@ const Feedback = ({ status }) => {
   if (status === null) return null;
   return (
     <div className={`feedback ${status ? 'correct' : 'incorrect'}`}>
-      {status ? 'Correct!' : 'Try Again!'}
+      {status ? 'Wah Bhasha Wah!' : 'Try Again Buddy!'}
     </div>
   );
 };
@@ -258,14 +293,34 @@ const Feedback = ({ status }) => {
 const Game = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isCorrect, setIsCorrect] = useState(null);
+  const [tapSound, setTapSound] = useState(null);
+  const [gameCompleted, setGameCompleted] = useState(false);
+  const [isImageLoading, setIsImageLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true); // State to control loading visibility
+
+useEffect(() => {
+  const timer = setTimeout(() => {
+    setIsLoading(false); // Hide the loader after 1 second
+  }, 1000);
+
+  return () => clearTimeout(timer); // Cleanup on component unmount
+}, []);
 
   const currentClue = clues[currentIndex];
+
+  useEffect(() => {
+    setIsImageLoading(true); // Image is about to change
+  }, [currentIndex]);
 
   const handleAnswerSubmit = (userAnswer) => {
     if (userAnswer.toUpperCase() === currentClue.answer.replace(/\s/g, '').toUpperCase()) {
       setIsCorrect(true);
       setTimeout(() => {
-        setCurrentIndex((prev) => prev + 1);
+        if (currentIndex + 1 >= clues.length) {
+          setGameCompleted(true);
+        } else {
+          setCurrentIndex((prev) => prev + 1);
+        }
         setIsCorrect(null);
       }, 1000);
     } else {
@@ -273,16 +328,39 @@ const Game = () => {
     }
   };
 
-  if (!currentClue) return <div className="game-complete">You completed the game! 🎉</div>;
+  const handleImageLoad = () => {
+    console.log('Image has loaded!');
+    setIsImageLoading(false); // This is the key to hide the loader
+  };
+
+
+  if (gameCompleted) {
+    return (
+      <div className="game-complete">
+        You completed the game! 🎉<br />
+        <a href="https://www.geoguessr.com/quiz/6573318f-d235-4177-95ab-f3c6ceb33a35?r=632534ad4d6352b411e20171">Now finish the second Birthday special challenge!</a>
+      </div>
+    );
+  }
 
   return (
-    <div className="game-wrapper">
+    <div className={`game-wrapper ${isLoading ? 'hidden' : ''}`}>
       <div className="birthday-banner">Happy Birthday Bhasha! 🎉🎈</div>
-      <ImageClue src={currentClue.imageUrl} round={currentIndex + 1} />
-      <AnswerTiles answer={currentClue.answer} onSubmit={handleAnswerSubmit} />
+      {/* Show loading gif if image is loading */}
+      {isImageLoading && <div className="loader-container"><img class="loader-img" src={`${process.env.PUBLIC_URL}/images/loading.gif`} alt="Loading..." /></div>}
+      <ImageClue
+        src={currentClue.imageUrl}
+        round={currentIndex + 1}
+        onImageLoad={handleImageLoad} />
+        <AnswerTiles
+          answer={currentClue.answer}
+          onSubmit={handleAnswerSubmit}
+        />
+
       <Feedback status={isCorrect} />
     </div>
   );
 };
+
 
 export default Game;
