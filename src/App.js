@@ -4,137 +4,137 @@ import './App.css';
 const clues = [
   {
     id: 1,
-    imageUrl: '/images/dt.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/dt.png',
     answer: 'Dragon Tales',
   },
   {
     id: 2,
-    imageUrl: '/images/lilac.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/lilac.png',
     answer: 'lilac',
   },
   {
     id: 3,
-    imageUrl: '/images/swiss.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/swiss.png',
     answer: 'switzerland',
   },
   {
     id:4,
-    imageUrl: '/images/garb.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/garb.png',
     answer: 'garba'
   },
   {
     id:5,
-    imageUrl: '/images/NB.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/NB.png',
     answer: 'naren'
   },
   {
     id:6,
-    imageUrl: '/images/pk.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/pk.png',
     answer: 'pikachu'
   },
   {
     id:7,
-    imageUrl: '/images/rn.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/rn.png',
     answer: 'rain'
   },
   {
     id:8,
-    imageUrl: '/images/aw.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/aw.png',
     answer: 'arabic wedding'
   },
   {
     id:9,
-    imageUrl: '/images/bhul.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/bhul.png',
     answer: 'bhool bhulaiyaa'
   },
   {
     id:10,
-    imageUrl: '/images/br.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/br.png',
     answer: 'bibhatsa'
   },
   {
     id:11,
-    imageUrl: '/images/dk.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/dk.png',
     answer: 'dal khichdi'
   },
   {
     id:12,
-    imageUrl: '/images/dp.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/dp.png',
     answer: 'dragon potato'
   },
   {
     id:13,
-    imageUrl: '/images/kk.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/kk.png',
     answer: 'kathak'
   },
   {
     id:14,
-    imageUrl: '/images/kn.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/kn.png',
     answer: 'krishnayan'
   },
   {
     id:15,
-    imageUrl: '/images/kp.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/kp.png',
     answer: 'crispello'
   },
   {
     id:16,
-    imageUrl: '/images/mango.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/mango.png',
     answer: 'mango'
   },
   {
     id:17,
-    imageUrl: '/images/pg.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/pg.png',
     answer: 'pavagadh'
   },
   {
     id:18,
-    imageUrl: '/images/pj.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/pj.png',
     answer: 'pinju'
   },
   {
     id:19,
-    imageUrl: '/images/rk.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/rk.png',
     answer: 'ranbir kapoor'
   },
   {
     id:20,
-    imageUrl: '/images/sk.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/sk.png',
     answer: 'seekh kebab'
   },
   {
     id:21,
-    imageUrl: '/images/sn.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/sn.png',
     answer: 'sun'
   },
   {
     id:22,
-    imageUrl: '/images/sw.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/sw.png',
     answer: 'swing'
   },
   {
     id:23,
-    imageUrl: '/images/ao.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/ao.png',
     answer: 'aglio olio'
   },
   {
     id:24,
-    imageUrl: '/images/bd.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/bd.png',
     answer: 'bhasha'
   },
   {
     id:25,
-    imageUrl: '/images/bn.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/bn.png',
     answer: 'brooklyn nine nine'
   },
   {
     id:26,
-    imageUrl: '/images/mk.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/mk.png',
     answer: 'madhav kyay nathi'
   },
   {
     id:27,
-    imageUrl: '/images/bb.png',
+    imageUrl: process.env.PUBLIC_URL + '/images/bb.png',
     answer: 'bachuben'
   }
 ];
