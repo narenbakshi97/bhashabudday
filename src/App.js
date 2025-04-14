@@ -351,12 +351,14 @@ useEffect(() => {
       <ImageClue
         src={currentClue.imageUrl}
         round={currentIndex + 1}
-        onImageLoad={handleImageLoad} />
+        onImageLoad={handleImageLoad} // Call this when image is loaded
+      />
+      {
         <AnswerTiles
           answer={currentClue.answer}
           onSubmit={handleAnswerSubmit}
         />
-
+      }
       <Feedback status={isCorrect} />
     </div>
   );
