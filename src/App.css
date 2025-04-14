@@ -62,7 +62,7 @@ body {
 }
 
 .round-number {
-  color: #007bff;
+  color: #000;
   font-weight: 700;
 }
 
@@ -191,14 +191,19 @@ body {
   margin: 0 auto;
 }
 
-/* 📱 Responsive adjustments for smaller screens */
+/* Responsive tweaks */
 @media (max-width: 480px) {
+  .tile-display {
+    width: 32px;
+    height: 32px;
+    font-size: 1.2rem;
+  }
+
   .tiles-word-group {
-    gap: 10px; /* Space between words */
-    margin: 10px 0;
+    gap: 12px;
   }
 
   .tiles-single-word {
-    gap: 4px;
+    gap: 6px;
   }
 }
